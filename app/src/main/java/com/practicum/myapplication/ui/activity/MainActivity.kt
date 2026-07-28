@@ -27,14 +27,19 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.rememberNavController
+import androidx.room.Room
 import com.practicum.myapplication.PlaylistHost
 import com.practicum.myapplication.R
+import com.practicum.myapplication.data.db.AppDatabase
 import com.practicum.myapplication.ui.search.SearchViewModel
 
 class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        Room.databaseBuilder(this, AppDatabase::class.java, "database.db").build()
+
         setContent {
             MaterialTheme {
                 val navController = rememberNavController()

@@ -1,87 +1,72 @@
 package com.practicum.myapplication.data.repository
 
-import android.text.format.Time
-import com.practicum.myapplication.data.dto.TrackDTO
-import com.practicum.myapplication.data.db.RoomDBClient
-import com.practicum.myapplication.data.dto.PlaylistDTO
+import com.practicum.myapplication.data.db.AppDatabase
+import com.practicum.myapplication.data.dto.PlaylistEntity
+import com.practicum.myapplication.data.dto.PlaylistTrackEntity
+import com.practicum.myapplication.data.dto.TrackEntity
+import com.practicum.myapplication.data.dto.toDomain
+import com.practicum.myapplication.data.dto.toEntity
 import com.practicum.myapplication.domain.repository.PlaylistsRepository
 import com.practicum.myapplication.domain.model.Playlist
 import com.practicum.myapplication.domain.model.Track
+import java.util.Calendar
 
 class PlaylistsRepositoryImpl(
-    private val roomDBClient: RoomDBClient
+    private val appDatabase: AppDatabase
+
 ) : PlaylistsRepository {
+
+    fun getAppDatabase(): AppDatabase = appDatabase
+
     override suspend fun createPlaylist(title: String, description: String) {
-        roomDBClient.createPlaylist(PlaylistDTO(
-            id = roomDBClient.getPlaylists().maxOfOrNull { it.id + 1 } ?: 1,
+        val newPlaylist = PlaylistEntity(
             title = title,
-            year = Time.YEAR.toString(),
-            coverUrl = null,
-            tracks = mutableListOf<TrackDTO>(),
-            trackCount = 0,
-            sumTracksDurationMillis = 0,
+            year = Calendar.getInstance().get(Calendar.YEAR).toString(),
+//            trackEntities = mutableListOf<TrackEntity>(),
+            sumDurationMillis = 0,
             hasImage = true
-            ))
+        )
+        appDatabase.getPlaylistDAO().insertNewPlaylist(newPlaylist)
     }
 
     override suspend fun getPlaylists(): List<Playlist> {
-        return roomDBClient.getPlaylists().map { dto ->
-            val seconds = dto.sumTracksDurationMillis / 1000
-            val minutes = seconds / 60
-            val sumTracksDuration = "%02d".format(minutes) + ":" + "%02d".format(seconds - minutes * 60)
-
-            Playlist(
-                id = dto.id,
-                title = dto.title,
-                year = dto.year,
-                coverUrl = dto.coverUrl,
-                tracks = dto.tracks.map { mapToDomain(it) },
-                trackCount = dto.trackCount.toString(),
-                sumTrackDuration = sumTracksDuration,
-                hasImage = dto.hasImage
-            )
+        return appDatabase.getPlaylistDAO().getPlaylists().map {
+            val trackCount = appDatabase.getPlaylistTrackDAO().getTrackIdsByPlaylistId(it.id).size
+            it.toDomain(trackCount)
         }
     }
 
     override suspend fun addTrackToPlaylist(
         track: Track,
-        playlistId: Long
+        playlist: Playlist
     ) {
-        val trackDTO = mapToDTO(track)
-        val playlists = roomDBClient.getPlaylists()
-        var flag = false
-
-        for (playlist in playlists) {
-            if (playlist.id == playlistId) {
-                if (!playlist.tracks.contains<TrackDTO>(trackDTO)) {
-                    playlist.tracks.add(mapToDTO(track))
-                    flag = true
-                }
-            }
-        }
-
-        if (!flag) {
-            throw IllegalArgumentException("no playlist with provided id")
-        }
-
-
+        val playlistTrackEntity = PlaylistTrackEntity(playlist.id, track.id)
+        appDatabase.getPlaylistTrackDAO().addTrackToPlaylist(playlistTrackEntity, track.toEntity())
     }
 
-    private fun mapToDomain(dto: TrackDTO): Track {
+    override suspend fun getTracksByPlaylistId(id: Long): List<Track> {
+        val trackIds = appDatabase.getPlaylistTrackDAO().getTrackIdsByPlaylistId(id)
+        val from = trackIds.min()
+        val to = trackIds.max()
+
+        return appDatabase.getTrackDAO().getTracksBetween(from, to).map { it.toDomain() }
+    }
+
+    private fun mapToDomain(dto: TrackEntity): Track {
         val seconds = dto.trackTimeMillis / 1000
         val minutes = seconds / 60
         val trackTime = "%02d".format(minutes) + ":" + "%02d".format(seconds - minutes * 60)
         return Track(
-            id = dto.id, // Generate or fetch proper ID
+            id = dto.id,
             trackName = dto.trackName,
             artistName = dto.artistName,
             trackTime = trackTime
         )
     }
 
-    private fun mapToDTO(track: Track): TrackDTO {
+    private fun mapToDTO(track: Track): TrackEntity {
         // Parse trackTime back to millis if needed, or store differently
-        return TrackDTO(
+        return TrackEntity(
             id = track.id,
             trackName = track.trackName,
             artistName = track.artistName,

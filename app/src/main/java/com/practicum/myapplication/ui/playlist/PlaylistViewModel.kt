@@ -53,7 +53,7 @@ class PlaylistsViewModel(
     fun addTrackToPlaylist(track: Track, playlist: Playlist) {
         viewModelScope.launch(Dispatchers.IO) {
             try {
-                playlistsRepository.addTrackToPlaylist(track, playlist.id)
+                playlistsRepository.addTrackToPlaylist(track, playlist)
             } catch (e: Exception) {
                 _playlistsState.update { PlaylistsLoadState.Fail(error = e.message.toString()) }
             }

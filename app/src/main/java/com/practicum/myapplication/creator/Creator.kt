@@ -1,7 +1,6 @@
 package com.practicum.myapplication.creator
 
-import com.practicum.myapplication.data.db.PlaylistStorage
-import com.practicum.myapplication.data.db.RoomDBClient
+import com.practicum.myapplication.data.db.AppDatabase
 import com.practicum.myapplication.data.db.TrackStorage
 import com.practicum.myapplication.data.repository.PlaylistsRepositoryImpl
 import com.practicum.myapplication.data.network.RetrofitNetworkClient
@@ -14,9 +13,8 @@ object Creator {
         return TracksRepositoryImpl(RetrofitNetworkClient(TrackStorage()))
     }
 
-    private val playlistStorage by lazy { PlaylistStorage() }
     private val playlistRepository by lazy {
-        PlaylistsRepositoryImpl(RoomDBClient(playlistStorage))
+        PlaylistsRepositoryImpl(TODO())
     }
 
     fun getPlaylistRepository(): PlaylistsRepository = playlistRepository
