@@ -1,3 +1,34 @@
 <resources>
-    <string name="app_name">My Application</string>
+    <string name="app_name">Playlist Maker</string>
+
+    <string name="search">Поиск</string>
+    <string name="media_library">Медиатека</string>
+    <string name="favorites">Избранное</string>
+    <string name="settings">Настройки</string>
+
+    <string name="message_track_clicked">Нажат трек: </string>
+    <string name="settings_title">Настройки</string>
+    <string name="settings_theme">Темная тема</string>
+    <string name="settings_share">Поделиться приложением</string>
+    <string name="settings_support">Написать в поддержку</string>
+    <string name="settings_agreement">Пользовательское соглашение</string>
+
+    <string name="support_email">golub.oleggolyb2017@yandex.ru</string>
+    <string name="support_subject">Сообщение разработчикам и разработчицам приложения Playlist Maker</string>
+    <string name="support_message">Спасибо разработчикам и разработчицам за крутое приложение!</string>
+    <string name="share_link">https://practicum.yandex.ru/android-developer/</string>
+    <string name="offer_link">https://yandex.ru/legal/practicum_offer/</string>
+
+    <string name="search_placeholder">Поиск</string>
+    <string name="search_start_hint">Введите запрос (например: 2000)</string>
+    <string name="nothing_found">Ничего не найдено </string>
+    <string name="error_prefix">Ошибка: </string>
+
+    <string name="description_back">Назад</string>
+    <string name="description_search">Иконка поиска</string>
+    <string name="description_clear">Очистить поисковый запрос</string>
+    <string name="description_track_image">Обложка трека</string>
+
+    <string name="screen_media_content">Здесь будет Медиатека</string>
+    <string name="screen_favorites_content">Здесь будет Избранное</string>
 </resources>
