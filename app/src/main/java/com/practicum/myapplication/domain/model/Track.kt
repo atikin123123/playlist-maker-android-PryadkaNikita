@@ -1,4 +1,4 @@
-package com.practicum.myapplication.data.network
+package com.practicum.myapplication.domain.model
 
 data class Track(
     val trackName: String,

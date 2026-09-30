@@ -71,7 +71,6 @@ fun MainScreen(
         ) {
             Column(modifier = Modifier.fillMaxSize().padding(vertical = 16.dp)) {
 
-                // Кнопка ПОИСК
                 MenuButton(
                     text = stringResource(R.string.search),
                     icon = Icons.Filled.Search,

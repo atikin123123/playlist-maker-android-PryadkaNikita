@@ -5,10 +5,12 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.practicum.myapplication.ui.activity.MainScreen
+import com.practicum.myapplication.ui.playlist.CreatePlaylistScreen
 import com.practicum.myapplication.ui.search.SearchScreen
 import com.practicum.myapplication.ui.settings.SettingsScreen
-import com.practicum.myapplication.ui.settings.MediaLibraryScreen
+import com.practicum.myapplication.ui.playlist.PlaylistsScreen
 import com.practicum.myapplication.ui.settings.FavoritesScreen
+import com.practicum.myapplication.ui.track.TrackDetails
 
 @Composable
 fun PlaylistHost(navController: NavHostController) {
@@ -30,7 +32,8 @@ fun PlaylistHost(navController: NavHostController) {
         // 2. Экран Поиска
         composable(Screen.Search.name) {
             SearchScreen(
-                onBack = { navController.popBackStack() }
+                onBack = { navController.popBackStack() },
+                onTrackClick = { navController.navigate(Screen.TrackDetails.name) }
             )
         }
 
@@ -43,12 +46,29 @@ fun PlaylistHost(navController: NavHostController) {
 
         // 4. Экран Медиатеки
         composable(Screen.MediaLibrary.name) {
-            MediaLibraryScreen()
+            PlaylistsScreen(
+                onBack = { navController.popBackStack() },
+                onCreatePlaylistClick = {navController.navigate(Screen.CreatePlaylistScreen.name)}
+                )
         }
 
         // 5. Экран Избранного
         composable(Screen.Favorites.name) {
             FavoritesScreen()
+        }
+
+        // 6. Экран Детали Трека
+        composable(Screen.TrackDetails.name) {
+            TrackDetails(
+                onBack = { navController.popBackStack() }
+            )
+        }
+
+        // 7. Экран Создания Плейлиста
+        composable(Screen.CreatePlaylistScreen.name) {
+            CreatePlaylistScreen(
+                onBackClick = { navController.popBackStack() }
+            )
         }
     }
 }

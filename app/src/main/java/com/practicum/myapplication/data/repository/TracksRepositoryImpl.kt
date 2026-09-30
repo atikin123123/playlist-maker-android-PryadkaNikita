@@ -1,9 +1,10 @@
-package com.practicum.myapplication.data.network
+package com.practicum.myapplication.data.repository
 
-import com.practicum.myapplication.data.dto.TracksSearchRequest
-import com.practicum.myapplication.data.dto.TracksSearchResponse
-import com.practicum.myapplication.domain.NetworkClient
-import com.practicum.myapplication.domain.TracksRepository
+import com.practicum.myapplication.data.network.TracksSearchRequest
+import com.practicum.myapplication.data.network.TracksSearchResponse
+import com.practicum.myapplication.data.network.NetworkClient
+import com.practicum.myapplication.domain.repository.TracksRepository
+import com.practicum.myapplication.domain.model.Track
 import kotlinx.coroutines.delay
 
 class TracksRepositoryImpl(private val networkClient: NetworkClient) : TracksRepository {
@@ -16,7 +17,8 @@ class TracksRepositoryImpl(private val networkClient: NetworkClient) : TracksRep
                 val seconds = it.trackTimeMillis / 1000
                 val minutes = seconds / 60
                 val trackTime = "%02d".format(minutes) + ":" + "%02d".format(seconds - minutes * 60)
-                Track(it.trackName, it.artistName, trackTime) }
+                Track(it.trackName, it.artistName, trackTime)
+            }
         } else {
             emptyList()
         }

@@ -1,6 +1,5 @@
 package com.practicum.myapplication.ui.search
 
-import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -19,7 +18,6 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
@@ -27,15 +25,17 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.practicum.myapplication.R
-import com.practicum.myapplication.data.network.Track
+import com.practicum.myapplication.domain.model.Track
 
 @Composable
 fun SearchScreen(
     onBack: () -> Unit,
+    onTrackClick: () -> Unit,
     viewModel: SearchViewModel = viewModel(factory = SearchViewModel.getViewModelFactory())
 ) {
     val screenState by viewModel.searchScreenState.collectAsState()
@@ -151,7 +151,7 @@ fun SearchScreen(
                 } else {
                     LazyColumn(modifier = Modifier.fillMaxSize()) {
                         items(tracks.size) { index ->
-                            TrackListItem(track = tracks[index])
+                            TrackListItem(track = tracks[index], onTrackClick)
                         }
                     }
                 }
@@ -170,15 +170,16 @@ fun SearchScreen(
 }
 
 @Composable
-fun TrackListItem(track: Track) {
-    val context = LocalContext.current
+fun TrackListItem(track: Track, onClick: () -> Unit) {
+//    val context = LocalContext.current
 
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .clickable {
-                val message = context.getString(R.string.message_track_clicked)
-                Toast.makeText(context, "$message ${track.trackName}", Toast.LENGTH_SHORT).show()
+//                val message = context.getString(R.string.message_track_clicked)
+//                Toast.makeText(context, "$message ${track.trackName}", Toast.LENGTH_SHORT).show()
+                onClick()
             }
             .padding(horizontal = 16.dp, vertical = 8.dp),
         verticalAlignment = Alignment.CenterVertically
@@ -195,4 +196,16 @@ fun TrackListItem(track: Track) {
         }
         Icon(Icons.AutoMirrored.Filled.KeyboardArrowRight, contentDescription = null, tint = colorResource(R.color.yp_gray))
     }
+}
+
+@Preview
+@Composable
+fun SearchScreenPreview() {
+    SearchScreen({}, {})
+}
+
+@Preview
+@Composable
+fun TLPreview() {
+    TrackListItem(Track("Fuel", "Metallica", "5:32"), {})
 }
