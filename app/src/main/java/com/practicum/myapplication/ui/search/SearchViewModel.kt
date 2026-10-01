@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.practicum.myapplication.creator.Creator
+import com.practicum.myapplication.domain.model.Track
 import com.practicum.myapplication.domain.repository.TracksRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -16,6 +17,12 @@ class SearchViewModel(
 ) : ViewModel() {
     private val _searchScreenState = MutableStateFlow<SearchState>(SearchState.Initial)
     val searchScreenState = _searchScreenState.asStateFlow()
+
+    var selectedTrack: Track? = null
+        private set
+    fun setSelectedTrack(track: Track){
+        selectedTrack = track
+    }
 
     fun search(whatSearch: String){
         viewModelScope.launch(Dispatchers.IO) {

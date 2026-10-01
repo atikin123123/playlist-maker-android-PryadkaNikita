@@ -31,12 +31,14 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.practicum.myapplication.R
 import com.practicum.myapplication.domain.model.Track
+import com.practicum.myapplication.ui.track.TrackListItem
 
 @Composable
 fun SearchScreen(
     onBack: () -> Unit,
     onTrackClick: () -> Unit,
-    viewModel: SearchViewModel = viewModel(factory = SearchViewModel.getViewModelFactory())
+    viewModel: SearchViewModel
+//    = viewModel(factory = SearchViewModel.getViewModelFactory())
 ) {
     val screenState by viewModel.searchScreenState.collectAsState()
     var text by remember { mutableStateOf("") }
@@ -151,7 +153,7 @@ fun SearchScreen(
                 } else {
                     LazyColumn(modifier = Modifier.fillMaxSize()) {
                         items(tracks.size) { index ->
-                            TrackListItem(track = tracks[index], onTrackClick)
+                            TrackListItem(track = tracks[index], onTrackClick, viewModel)
                         }
                     }
                 }
@@ -169,43 +171,8 @@ fun SearchScreen(
     }
 }
 
-@Composable
-fun TrackListItem(track: Track, onClick: () -> Unit) {
-//    val context = LocalContext.current
-
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .clickable {
-//                val message = context.getString(R.string.message_track_clicked)
-//                Toast.makeText(context, "$message ${track.trackName}", Toast.LENGTH_SHORT).show()
-                onClick()
-            }
-            .padding(horizontal = 16.dp, vertical = 8.dp),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Image(
-            painter = painterResource(id = R.drawable.ic_music),
-            contentDescription = stringResource(R.string.description_track_image),
-            modifier = Modifier.size(45.dp).clip(RoundedCornerShape(2.dp))
-        )
-        Spacer(modifier = Modifier.width(8.dp))
-        Column(modifier = Modifier.weight(1f)) {
-            Text(track.trackName, fontSize = 16.sp, color = colorResource(R.color.black), maxLines = 1, fontWeight = FontWeight.Normal)
-            Text("${track.artistName} • ${track.trackTime}", fontSize = 11.sp, color = colorResource(R.color.yp_gray), maxLines = 1)
-        }
-        Icon(Icons.AutoMirrored.Filled.KeyboardArrowRight, contentDescription = null, tint = colorResource(R.color.yp_gray))
-    }
-}
-
 @Preview
 @Composable
 fun SearchScreenPreview() {
-    SearchScreen({}, {})
-}
-
-@Preview
-@Composable
-fun TLPreview() {
-    TrackListItem(Track("Fuel", "Metallica", "5:32"), {})
+    SearchScreen({}, {}, viewModel = viewModel(factory = SearchViewModel.getViewModelFactory()))
 }

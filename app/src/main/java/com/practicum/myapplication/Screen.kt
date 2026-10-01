@@ -7,5 +7,6 @@ enum class Screen {
     MediaLibrary,
     Favorites,
     TrackDetails,
-    CreatePlaylistScreen
+    CreatePlaylistScreen,
+    PlaylistScreen
 }

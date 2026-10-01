@@ -1,19 +1,27 @@
 package com.practicum.myapplication
 
+import androidx.compose.foundation.content.PlatformTransferableContent
 import androidx.compose.runtime.Composable
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.practicum.myapplication.ui.activity.MainScreen
 import com.practicum.myapplication.ui.playlist.CreatePlaylistScreen
+import com.practicum.myapplication.ui.playlist.PlaylistScreen
 import com.practicum.myapplication.ui.search.SearchScreen
 import com.practicum.myapplication.ui.settings.SettingsScreen
 import com.practicum.myapplication.ui.playlist.PlaylistsScreen
+import com.practicum.myapplication.ui.playlist.PlaylistsViewModel
+import com.practicum.myapplication.ui.search.SearchViewModel
 import com.practicum.myapplication.ui.settings.FavoritesScreen
 import com.practicum.myapplication.ui.track.TrackDetails
 
 @Composable
 fun PlaylistHost(navController: NavHostController) {
+
+    val searchViewModel: SearchViewModel = viewModel(factory = SearchViewModel.getViewModelFactory())
+    val playlistsViewModel: PlaylistsViewModel = viewModel(factory = PlaylistsViewModel.getViewModelFactory())
 
     NavHost(
         navController = navController,
@@ -32,8 +40,11 @@ fun PlaylistHost(navController: NavHostController) {
         // 2. Экран Поиска
         composable(Screen.Search.name) {
             SearchScreen(
+                viewModel = searchViewModel,
                 onBack = { navController.popBackStack() },
-                onTrackClick = { navController.navigate(Screen.TrackDetails.name) }
+                onTrackClick = {
+                    navController.navigate(Screen.TrackDetails.name)
+                }
             )
         }
 
@@ -47,8 +58,10 @@ fun PlaylistHost(navController: NavHostController) {
         // 4. Экран Медиатеки
         composable(Screen.MediaLibrary.name) {
             PlaylistsScreen(
+                playlistsViewModel = playlistsViewModel,
                 onBack = { navController.popBackStack() },
-                onCreatePlaylistClick = {navController.navigate(Screen.CreatePlaylistScreen.name)}
+                onCreatePlaylistClick = {navController.navigate(Screen.CreatePlaylistScreen.name)},
+                onPlaylistClick = { navController.navigate(Screen.PlaylistScreen.name) }
                 )
         }
 
@@ -60,6 +73,8 @@ fun PlaylistHost(navController: NavHostController) {
         // 6. Экран Детали Трека
         composable(Screen.TrackDetails.name) {
             TrackDetails(
+                playlistsViewModel = playlistsViewModel,
+                searchViewModel = searchViewModel,
                 onBack = { navController.popBackStack() }
             )
         }
@@ -68,6 +83,17 @@ fun PlaylistHost(navController: NavHostController) {
         composable(Screen.CreatePlaylistScreen.name) {
             CreatePlaylistScreen(
                 onBackClick = { navController.popBackStack() }
+            )
+        }
+
+        // 7. Экран Плейлиста
+        composable(Screen.PlaylistScreen.name) {
+            PlaylistScreen(
+                onBack = { navController.popBackStack() },
+                onTrackClick = { navController.navigate(Screen.TrackDetails.name)},
+                playlistsViewModel = playlistsViewModel,
+                searchViewModel = searchViewModel
+                
             )
         }
     }

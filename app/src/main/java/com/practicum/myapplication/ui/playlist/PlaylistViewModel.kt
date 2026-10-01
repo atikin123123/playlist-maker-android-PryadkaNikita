@@ -1,10 +1,11 @@
 package com.practicum.myapplication.ui.playlist
 
-import android.content.ClipDescription
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.practicum.myapplication.creator.Creator
+import com.practicum.myapplication.domain.model.Playlist
+import com.practicum.myapplication.domain.model.Track
 import com.practicum.myapplication.domain.repository.PlaylistsRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -18,6 +19,12 @@ class PlaylistsViewModel(
 
     private val _playlistsState = MutableStateFlow<PlaylistsLoadState>(PlaylistsLoadState.Initial)
     val playlistsState = _playlistsState.asStateFlow()
+
+    var selectedPlaylist: Playlist? = null
+        private set
+    fun setSelectedPlaylist(playlist: Playlist){
+        selectedPlaylist = playlist
+    }
 
     // Эта функция вызовется, когда пользователь откроет вкладку "Медиатека"
     fun loadPlaylists() {
@@ -37,6 +44,16 @@ class PlaylistsViewModel(
             try {
                 playlistsRepository.createPlaylist(title, description)
                 loadPlaylists()
+            } catch (e: Exception) {
+                _playlistsState.update { PlaylistsLoadState.Fail(error = e.message.toString()) }
+            }
+        }
+    }
+
+    fun addTrackToPlaylist(track: Track, playlist: Playlist) {
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                playlistsRepository.addTrackToPlaylist(track, playlist.id)
             } catch (e: Exception) {
                 _playlistsState.update { PlaylistsLoadState.Fail(error = e.message.toString()) }
             }

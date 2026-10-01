@@ -2,6 +2,7 @@ package com.practicum.myapplication.ui.playlist
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -22,18 +23,17 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.practicum.myapplication.domain.model.Playlist
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PlaylistsScreen(
-    playlistsViewModel: PlaylistsViewModel = viewModel(factory = PlaylistsViewModel.getViewModelFactory()),
+    playlistsViewModel: PlaylistsViewModel,
     onBack: () -> Unit,
-    onCreatePlaylistClick: () -> Unit
+    onCreatePlaylistClick: () -> Unit,
+    onPlaylistClick: () -> Unit
 ) {
 
     val screenState by playlistsViewModel.playlistsState.collectAsState()
@@ -102,7 +102,7 @@ fun PlaylistsScreen(
                         .padding(top = 8.dp)
                 ) {
                     items(playlists) { playlist ->
-                        PlaylistItem(playlist)
+                        PlaylistItem(playlist, onPlaylistClick, playlistsViewModel)
                     }
                 }
             }
@@ -119,11 +119,15 @@ fun PlaylistsScreen(
 }
 
 @Composable
-fun PlaylistItem(playlist: Playlist) {
+fun PlaylistItem(playlist: Playlist, onClick: () -> Unit, playlistsViewModel: PlaylistsViewModel) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 16.dp, vertical = 10.dp),
+            .padding(horizontal = 16.dp, vertical = 10.dp)
+            .clickable {
+                playlistsViewModel.setSelectedPlaylist(playlist)
+                onClick()
+            },
         verticalAlignment = Alignment.CenterVertically
     ) {
         // Обложка плейлиста
@@ -167,7 +171,7 @@ fun PlaylistItem(playlist: Playlist) {
             )
             Spacer(modifier = Modifier.height(4.dp))
             Text(
-                text = playlist.tracksCount,
+                text = playlist.trackCount,
                 fontSize = 14.sp,
                 color = Color(0xFFAAAAAA) // Серый цвет текста
             )
@@ -175,9 +179,8 @@ fun PlaylistItem(playlist: Playlist) {
     }
 }
 
-
-@Preview
-@Composable
-fun PlaylistScreenPreview() {
-    PlaylistsScreen(onBack = {}, onCreatePlaylistClick = {})
-}
+//@Preview
+//@Composable
+//fun PlaylistScreenPreview() {
+//    PlaylistsScreen(onBack = {}, onCreatePlaylistClick = {})
+//}

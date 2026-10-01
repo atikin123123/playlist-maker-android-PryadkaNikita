@@ -30,14 +30,21 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.practicum.myapplication.data.dto.PlaylistDTO
 import com.practicum.myapplication.domain.model.Playlist
+import com.practicum.myapplication.domain.model.Track
 import com.practicum.myapplication.ui.playlist.PlaylistsScreen
+import com.practicum.myapplication.ui.playlist.PlaylistsViewModel
+import com.practicum.myapplication.ui.search.SearchViewModel
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TrackDetails(
-    onBack: () -> Unit
+    onBack: () -> Unit,
+    searchViewModel: SearchViewModel,
+    playlistsViewModel: PlaylistsViewModel
 ) {
+    val track: Track = searchViewModel.selectedTrack ?: throw NullPointerException()
+
     // Цвета для светлой темы
     val backgroundColor = colorResource(R.color.white)
     val textColor = colorResource(R.color.black)
@@ -85,7 +92,7 @@ fun TrackDetails(
 
         // Название трека
         Text(
-            text = "Yesterday (Remastered 2009)",
+            text = track.trackName,
             fontSize = 22.sp,
             fontWeight = FontWeight.Bold,
             color = textColor
@@ -95,7 +102,7 @@ fun TrackDetails(
 
         // Исполнитель
         Text(
-            text = "The Beatles",
+            text = track.artistName,
             fontSize = 16.sp,
             color = textColor
         )
@@ -145,36 +152,13 @@ fun TrackDetails(
                 },
                 sheetState = sheetState
             ) {
-                // Sheet content
                 AddToPlaylistScreen(
-                    playlists = listOf(
-                        Playlist("Best songs 2021", "98 треков", hasImage = true),
-                        Playlist("Summer Party", "157 треков", hasImage = true),
-                        Playlist("Morning", "32 трека", hasImage = false),
-                        Playlist("Hui", "32 трека", hasImage = false),
-                        Playlist("Best songs 2021", "98 треков", hasImage = true),
-                        Playlist("Summer Party", "157 треков", hasImage = true),
-                        Playlist("Morning", "32 трека", hasImage = false),
-                        Playlist("Hui", "32 трека", hasImage = false),
-                        Playlist("Best songs 2021", "98 треков", hasImage = true),
-                        Playlist("Summer Party", "157 треков", hasImage = true),
-                        Playlist("Morning", "32 трека", hasImage = false),
-                        Playlist("Hui", "32 трека", hasImage = false),
-                        Playlist("Best songs 2021", "98 треков", hasImage = true),
-                        Playlist("Summer Party", "157 треков", hasImage = true),
-                        Playlist("Morning", "32 трека", hasImage = false),
-                        Playlist("Hui", "32 трека", hasImage = false),
-                        Playlist("Best songs 2021", "98 треков", hasImage = true),
-                        Playlist("Summer Party", "157 треков", hasImage = true),
-                        Playlist("Morning", "32 трека", hasImage = false),
-                        Playlist("Hui", "32 трека", hasImage = false),
-                        Playlist("Best songs 2021", "98 треков", hasImage = true),
-                        Playlist("Summer Party", "157 треков", hasImage = true),
-                        Playlist("Morning", "32 трека", hasImage = false),
-                        Playlist("Hui", "32 трека", hasImage = false),
-                    ),
-                    onPlaylistSelected = {}
-                    )
+                    playlistsViewModel = playlistsViewModel,
+                    onPlaylistSelected = {
+                        playlistsViewModel.addTrackToPlaylist(track, playlistsViewModel.selectedPlaylist!!)
+                        showBottomSheet = false
+                    }
+                )
             }
         }
 
@@ -193,7 +177,7 @@ fun TrackDetails(
             )
 
             Text(
-                text = "5:35",
+                text = track.trackTime,
                 fontSize = 14.sp,
                 color = textColor,
                 fontWeight = FontWeight.Medium
@@ -202,8 +186,8 @@ fun TrackDetails(
     }
 }
 
-@Preview
-@Composable
-fun TDPreview() {
-    TrackDetails({})
-}
+//@Preview
+//@Composable
+//fun TDPreview() {
+//    TrackDetails(onBack = {}, TODO())
+//}
