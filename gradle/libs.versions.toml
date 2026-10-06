@@ -10,6 +10,7 @@ kotlin = "2.2.10"
 composeBom = "2026.02.01"
 roomVersion = "2.7.2"
 kspVersion = "2.2.10-2.0.2"
+retrofit = "2.11.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -31,6 +32,8 @@ androidx-room = { group= "androidx.room", name = "room-runtime", version.ref = "
 androidx-room-ktx = { group= "androidx.room", name = "room-ktx", version.ref = "roomVersion"}
 # Зависимость для работы Room с KSP
 androidx-room-ksp = { group= "androidx.room", name = "room-compiler", version.ref = "roomVersion"}
+retrofit = { group = "com.squareup.retrofit2", name = "retrofit", version.ref = "retrofit" }
+retrofit-converter-gson = { group = "com.squareup.retrofit2", name = "converter-gson", version.ref = "retrofit" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

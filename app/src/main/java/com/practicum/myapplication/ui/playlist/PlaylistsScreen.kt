@@ -2,7 +2,7 @@ package com.practicum.myapplication.ui.playlist
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -16,6 +16,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -23,6 +26,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.practicum.myapplication.domain.model.Playlist
@@ -37,11 +41,12 @@ fun PlaylistsScreen(
 ) {
 
     val screenState by playlistsViewModel.playlistsState.collectAsState()
+    var showDeleteConfirmDialog by remember { mutableStateOf(false) }
+    var playlistToDelete by remember { mutableStateOf<Playlist?>(null) }
 
     LaunchedEffect(Unit) {
         playlistsViewModel.loadPlaylists()
     }
-
 
     Scaffold(
         topBar = {
@@ -102,13 +107,25 @@ fun PlaylistsScreen(
                         .padding(top = 8.dp)
                 ) {
                     items(playlists) { playlist ->
-                        PlaylistItem(playlist, onPlaylistClick, playlistsViewModel)
+                        PlaylistItem(
+                            playlist = playlist,
+                            onClick = { playlist ->
+                                playlistsViewModel.setSelectedPlaylist(playlist)
+                                onPlaylistClick()
+                            },
+                            onLongClick = {
+                                playlistToDelete = playlist
+                                showDeleteConfirmDialog = true
+                            },
+                            playlistsViewModel = playlistsViewModel
+                        )
                     }
                 }
             }
 
             is PlaylistsLoadState.Fail -> Box(
-                Modifier.fillMaxSize(), contentAlignment = Alignment.Center
+                Modifier.fillMaxSize(),
+                contentAlignment = Alignment.Center
             ) {
                 Text("Не удалось загрузить плейлисты", color = Color.Red)
             }
@@ -116,18 +133,50 @@ fun PlaylistsScreen(
         }
 
     }
+
+    if (showDeleteConfirmDialog && playlistToDelete != null) {
+        AlertDialog(
+            onDismissRequest = { showDeleteConfirmDialog = false },
+            title = { Text("Удалить плейлист?") },
+            text = { Text("Плейлист \"${playlistToDelete?.title}\" будет удалён безвозвратно.") },
+            confirmButton = {
+                TextButton(
+                    onClick = {
+                        playlistToDelete?.let {
+                            playlistsViewModel.deletePlaylist(it)
+                        }
+                        showDeleteConfirmDialog = false
+                        playlistToDelete = null
+                    }
+                ) {
+                    Text("Удалить", color = Color.Red)
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { showDeleteConfirmDialog = false }) {
+                    Text("Отмена")
+                }
+            }
+        )
+    }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun PlaylistItem(playlist: Playlist, onClick: () -> Unit, playlistsViewModel: PlaylistsViewModel) {
+fun PlaylistItem(
+    playlist: Playlist,
+    onClick: (Playlist) -> Unit,
+    onLongClick: () -> Unit,
+    playlistsViewModel: PlaylistsViewModel
+) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 16.dp, vertical = 10.dp)
-            .clickable {
-                playlistsViewModel.setSelectedPlaylist(playlist)
-                onClick()
-            },
+            .combinedClickable(
+                onClick = { onClick(playlist) },
+                onLongClick = onLongClick
+            ),
         verticalAlignment = Alignment.CenterVertically
     ) {
         // Обложка плейлиста
@@ -167,7 +216,9 @@ fun PlaylistItem(playlist: Playlist, onClick: () -> Unit, playlistsViewModel: Pl
                 text = playlist.title,
                 fontSize = 18.sp,
                 fontWeight = FontWeight.Medium,
-                color = Color.Black
+                color = Color.Black,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
             )
             Spacer(modifier = Modifier.height(4.dp))
             Text(

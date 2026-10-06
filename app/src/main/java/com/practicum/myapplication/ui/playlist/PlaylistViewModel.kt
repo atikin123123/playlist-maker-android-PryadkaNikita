@@ -20,10 +20,11 @@ class PlaylistsViewModel(
     private val _playlistsState = MutableStateFlow<PlaylistsLoadState>(PlaylistsLoadState.Initial)
     val playlistsState = _playlistsState.asStateFlow()
 
-    var selectedPlaylist: Playlist? = null
-        private set
-    fun setSelectedPlaylist(playlist: Playlist){
-        selectedPlaylist = playlist
+    private val _selectedPlaylistState = MutableStateFlow<Playlist?>(null)
+    val selectedPlaylistState = _selectedPlaylistState.asStateFlow()
+
+    fun setSelectedPlaylist(playlist: Playlist) {
+        _selectedPlaylistState.value = playlist
     }
 
     fun loadPlaylists() {
@@ -54,6 +55,32 @@ class PlaylistsViewModel(
             try {
                 playlistsRepository.addTrackToPlaylist(track, playlist)
                 playlistsRepository.updatePlaylistSumTrackTimeMillisById(playlist.id)
+                val updatedPlaylist = playlistsRepository.getPlaylistById(playlist.id)
+                _selectedPlaylistState.update { updatedPlaylist }
+            } catch (e: Exception) {
+                _playlistsState.update { PlaylistsLoadState.Fail(error = e.message.toString()) }
+            }
+        }
+    }
+
+    fun deletePlaylist(playlist: Playlist) {
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                playlistsRepository.deletePlaylist(playlist)
+                loadPlaylists()
+            } catch (e: Exception) {
+                _playlistsState.update { PlaylistsLoadState.Fail(error = e.message.toString()) }
+            }
+        }
+    }
+
+    fun removeTrackFromPlaylist(track: Track, playlist: Playlist) {
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                playlistsRepository.removeTrackFromPlaylist(track, playlist)
+                playlistsRepository.updatePlaylistSumTrackTimeMillisById(playlist.id)
+                val updatedPlaylist = playlistsRepository.getPlaylistById(playlist.id)
+                _selectedPlaylistState.update { updatedPlaylist }
             } catch (e: Exception) {
                 _playlistsState.update { PlaylistsLoadState.Fail(error = e.message.toString()) }
             }

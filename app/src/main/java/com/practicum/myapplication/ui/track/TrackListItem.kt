@@ -1,7 +1,7 @@
 package com.practicum.myapplication.ui.track
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -22,24 +22,29 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.practicum.myapplication.R
 import com.practicum.myapplication.domain.model.Track
 import com.practicum.myapplication.ui.search.SearchViewModel
 
 @Composable
-fun TrackListItem(track: Track, onClick: () -> Unit, viewModel: SearchViewModel) {
+fun TrackListItem(
+    track: Track,
+    onClick: (Track) -> Unit,
+    onLongClick: () -> Unit = {},
+    viewModel: SearchViewModel
+) {
 
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .clickable {
-                viewModel.setSelectedTrack(track)
-                onClick()
-            }
+            .combinedClickable(
+                onClick = { onClick(track) },
+                onLongClick = onLongClick
+            )
             .padding(horizontal = 16.dp, vertical = 8.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
@@ -50,8 +55,20 @@ fun TrackListItem(track: Track, onClick: () -> Unit, viewModel: SearchViewModel)
         )
         Spacer(modifier = Modifier.width(8.dp))
         Column(modifier = Modifier.weight(1f)) {
-            Text(track.trackName, fontSize = 16.sp, color = colorResource(R.color.black), maxLines = 1, fontWeight = FontWeight.Normal)
-            Text("${track.artistName} • ${track.trackTime}", fontSize = 11.sp, color = colorResource(R.color.yp_gray), maxLines = 1)
+            Text(
+                track.trackName,
+                fontSize = 16.sp,
+                color = colorResource(R.color.black),
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+                fontWeight = FontWeight.Normal
+            )
+            Text(
+                "${track.artistName} • ${track.trackTime}",
+                fontSize = 11.sp,
+                color = colorResource(R.color.yp_gray),
+                maxLines = 1
+            )
         }
         Icon(Icons.AutoMirrored.Filled.KeyboardArrowRight, contentDescription = null, tint = colorResource(R.color.yp_gray))
     }

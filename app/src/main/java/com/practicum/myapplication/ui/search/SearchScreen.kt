@@ -124,7 +124,7 @@ fun SearchScreen(
                         } else {
                             LazyColumn(modifier = Modifier.fillMaxSize()) {
                                 items(tracks.size) { index ->
-                                    TrackListItem(track = tracks[index], onTrackClick, viewModel)
+                                    TrackListItem(track = tracks[index], onClick = { track -> viewModel.setSelectedTrack(track); onTrackClick() }, viewModel = viewModel)
                                 }
                             }
                         }

@@ -2,6 +2,7 @@ package com.practicum.myapplication.ui.track
 
 import androidx.compose.foundation.background
 import com.practicum.myapplication.ui.playlist.PlaylistItem
+import com.practicum.myapplication.domain.model.Playlist
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -23,7 +24,7 @@ import com.practicum.myapplication.ui.playlist.PlaylistsViewModel
 
 @Composable
 fun AddToPlaylistScreen(
-    onPlaylistSelected: () -> Unit,
+    onPlaylistSelected: (Playlist) -> Unit,
     modifier: Modifier = Modifier,
     playlistsViewModel: PlaylistsViewModel
 ) {
@@ -69,7 +70,7 @@ fun AddToPlaylistScreen(
                                 .fillMaxWidth()
                                 .padding(horizontal = 16.dp, vertical = 8.dp)
                         ) {
-                            PlaylistItem(playlist = playlist, onPlaylistSelected, playlistsViewModel)
+                            PlaylistItem(playlist = playlist, onClick = { playlist -> onPlaylistSelected(playlist) }, onLongClick = {}, playlistsViewModel = playlistsViewModel)
                         }
                     }
                 }

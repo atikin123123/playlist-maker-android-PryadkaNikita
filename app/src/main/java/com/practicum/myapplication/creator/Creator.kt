@@ -8,7 +8,6 @@ import androidx.room.Room
 import com.practicum.myapplication.data.db.AppDatabase
 import com.practicum.myapplication.data.db.FavoriteTrackDAO
 import com.practicum.myapplication.data.db.SearchHistoryPreferences
-import com.practicum.myapplication.data.db.TrackStorage
 import com.practicum.myapplication.data.repository.PlaylistsRepositoryImpl
 import com.practicum.myapplication.data.network.RetrofitNetworkClient
 import com.practicum.myapplication.data.repository.TracksRepositoryImpl
@@ -24,7 +23,7 @@ object Creator {
     }
 
     private val tracksRepository by lazy {
-        TracksRepositoryImpl(RetrofitNetworkClient(TrackStorage()))
+        TracksRepositoryImpl(RetrofitNetworkClient())
     }
     fun getTracksRepository(): TracksRepository = tracksRepository
 

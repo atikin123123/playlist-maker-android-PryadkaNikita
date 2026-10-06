@@ -5,7 +5,6 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
@@ -13,30 +12,33 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.AddPhotoAlternate
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.MusicNote
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
+import androidx.compose.material3.AlertDialog
+
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
@@ -45,12 +47,10 @@ import com.practicum.myapplication.domain.model.Track
 import com.practicum.myapplication.ui.search.SearchViewModel
 import com.practicum.myapplication.ui.track.TrackListItem
 
-// ---------- Colors ----------
 
 private val TextPrimary = Color(0xFF1A1A1A)
 private val IconGray = Color(0xFFA9A9AE)
 
-// ---------- Screen ----------
 
 @Composable
 fun PlaylistScreen(
@@ -61,9 +61,10 @@ fun PlaylistScreen(
     searchViewModel: SearchViewModel,
     playlistsViewModel: PlaylistsViewModel
 ) {
-    val playlist: Playlist = playlistsViewModel.selectedPlaylist ?: throw NullPointerException()
-
-
+    val playlist by playlistsViewModel.selectedPlaylistState.collectAsState()
+    val currentPlaylist = playlist ?: throw NullPointerException()
+    var showDeleteTrackDialog by remember { mutableStateOf(false) }
+    var trackToDelete by remember { mutableStateOf<Track?>(null) }
 
     Surface(modifier = Modifier.fillMaxSize(), color = Color.White) {
         LazyColumn(modifier = Modifier.fillMaxSize()) {
@@ -81,18 +82,52 @@ fun PlaylistScreen(
             }
             item {
                 PlaylistCover(
-                    url = playlist.coverUrl,
+                    url = currentPlaylist.coverUrl,
                     onClick = onCoverClick,
                     modifier = Modifier
                         .padding(horizontal = 16.dp, vertical = 8.dp)
                         .fillMaxWidth(),
                 )
             }
-            item { PlaylistInfo(playlist, onMenuClick) }
-            items(playlist.tracks, key = { it.id }) { track ->
-                TrackListItem(track = track, onClick = onTrackClick, searchViewModel)
+            item { PlaylistInfo(currentPlaylist, onMenuClick) }
+            items(currentPlaylist.tracks, key = { it.id }) { track ->
+                TrackListItem(
+                    track = track,
+                    onClick = { track -> searchViewModel.setSelectedTrack(track); onTrackClick() },
+                    onLongClick = {
+                        trackToDelete = track
+                        showDeleteTrackDialog = true
+                    },
+                    viewModel = searchViewModel
+                )
             }
         }
+    }
+
+    if (showDeleteTrackDialog && trackToDelete != null) {
+        AlertDialog(
+            onDismissRequest = { showDeleteTrackDialog = false },
+            title = { Text("Удалить трек?") },
+            text = { Text("Трек \"${trackToDelete?.trackName}\" будет удалён из плейлиста.") },
+            confirmButton = {
+                TextButton(
+                    onClick = {
+                        trackToDelete?.let {
+                            playlistsViewModel.removeTrackFromPlaylist(it, currentPlaylist)
+                        }
+                        showDeleteTrackDialog = false
+                        trackToDelete = null
+                    }
+                ) {
+                    Text("Удалить", color = Color.Red)
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { showDeleteTrackDialog = false }) {
+                    Text("Отмена")
+                }
+            }
+        )
     }
 }
 

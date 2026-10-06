@@ -58,7 +58,7 @@ class PlaylistsRepositoryImpl(
 
         val playlistNewSumTrackTimeMillis = _trackDAO.getTracksByIds(trackIds).sumOf { it.trackTimeMillis }
 
-        val playlist = _playlistDAO.getPlaylistById(id)
+        val playlist = _playlistDAO.getPlaylistById(id) ?: return
 
         val newPlaylist = PlaylistEntity(
             id = id,
@@ -87,5 +87,27 @@ class PlaylistsRepositoryImpl(
 
     override suspend fun isFavorite(trackId: Long): Boolean {
         return _favoriteTrackDAO.isFavorite(trackId)
+    }
+
+    override suspend fun deletePlaylist(playlist: Playlist) {
+        val playlistEntity = PlaylistEntity(
+            id = playlist.id,
+            title = playlist.title,
+            year = playlist.year,
+            sumDurationMillis = playlist.tracks.sumOf { it.toEntity().trackTimeMillis },
+            hasImage = playlist.hasImage
+        )
+        _playlistDAO.deletePlaylist(playlistEntity)
+    }
+
+    override suspend fun removeTrackFromPlaylist(track: Track, playlist: Playlist) {
+        _playlistTrackDAO.removeTrackFromPlaylist(playlist.id, track.id)
+    }
+
+    override suspend fun getPlaylistById(id: Long): Playlist? {
+        val playlistEntity = _playlistDAO.getPlaylistById(id) ?: return null
+        val trackIds = _playlistTrackDAO.getTrackIdsByPlaylistId(id)
+        val tracks = _trackDAO.getTracksByIds(trackIds)
+        return playlistEntity.toDomain(tracks)
     }
 }

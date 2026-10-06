@@ -100,7 +100,7 @@ fun FavoritesScreen(
                             items(tracks, key = { it.id }) { track ->
                                 TrackListItem(
                                     track = track,
-                                    onClick = onTrackClick,
+                                    onClick = { track -> searchViewModel.setSelectedTrack(track); onTrackClick() },
                                     viewModel = searchViewModel
                                 )
                             }

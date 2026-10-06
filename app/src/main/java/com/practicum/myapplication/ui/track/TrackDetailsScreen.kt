@@ -31,6 +31,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.practicum.myapplication.domain.model.Track
+import com.practicum.myapplication.domain.model.Playlist
 import com.practicum.myapplication.ui.favorites.FavoritesViewModel
 import com.practicum.myapplication.ui.playlist.PlaylistsViewModel
 import com.practicum.myapplication.ui.search.SearchViewModel
@@ -162,8 +163,8 @@ fun TrackDetails(
             ) {
                 AddToPlaylistScreen(
                     playlistsViewModel = playlistsViewModel,
-                    onPlaylistSelected = {
-                        playlistsViewModel.addTrackToPlaylist(track, playlistsViewModel.selectedPlaylist!!)
+                    onPlaylistSelected = { playlist ->
+                        playlistsViewModel.addTrackToPlaylist(track, playlist)
                         showBottomSheet = false
                     }
                 )

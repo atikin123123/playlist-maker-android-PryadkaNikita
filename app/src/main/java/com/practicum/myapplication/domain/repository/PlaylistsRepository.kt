@@ -14,4 +14,7 @@ interface PlaylistsRepository {
     suspend fun removeFromFavorites(trackId: Long)
     suspend fun getFavoriteTracks(): List<Track>
     suspend fun isFavorite(trackId: Long): Boolean
+    suspend fun deletePlaylist(playlist: Playlist)
+    suspend fun removeTrackFromPlaylist(track: Track, playlist: Playlist)
+    suspend fun getPlaylistById(id: Long): Playlist?
 }
