@@ -6,6 +6,7 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.preferencesDataStore
 import androidx.room.Room
 import com.practicum.myapplication.data.db.AppDatabase
+import com.practicum.myapplication.data.db.FavoriteTrackDAO
 import com.practicum.myapplication.data.db.SearchHistoryPreferences
 import com.practicum.myapplication.data.db.TrackStorage
 import com.practicum.myapplication.data.repository.PlaylistsRepositoryImpl
@@ -28,13 +29,20 @@ object Creator {
     fun getTracksRepository(): TracksRepository = tracksRepository
 
     private val database by lazy {
-        Room.databaseBuilder(appContext, AppDatabase::class.java, "database.db").build()
+        Room.databaseBuilder(appContext, AppDatabase::class.java, "database.db")
+            .fallbackToDestructiveMigration()
+            .build()
     }
 
     private val playlistRepository by lazy {
         PlaylistsRepositoryImpl(database)
     }
     fun getPlaylistRepository(): PlaylistsRepository = playlistRepository
+
+    private val _favoriteTrackDAO by lazy {
+        database.getFavoriteTrackDAO()
+    }
+    fun getFavoriteTrackDAO(): FavoriteTrackDAO = _favoriteTrackDAO
 
     private val Context.searchHistoryDataStore: DataStore<Preferences> by preferencesDataStore(
         name = "search_history_prefs"

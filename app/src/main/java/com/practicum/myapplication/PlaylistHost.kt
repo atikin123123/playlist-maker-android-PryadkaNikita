@@ -7,14 +7,15 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.practicum.myapplication.ui.activity.MainScreen
+import com.practicum.myapplication.ui.favorites.FavoritesScreen
+import com.practicum.myapplication.ui.favorites.FavoritesViewModel
 import com.practicum.myapplication.ui.playlist.CreatePlaylistScreen
 import com.practicum.myapplication.ui.playlist.PlaylistScreen
-import com.practicum.myapplication.ui.search.SearchScreen
-import com.practicum.myapplication.ui.settings.SettingsScreen
 import com.practicum.myapplication.ui.playlist.PlaylistsScreen
 import com.practicum.myapplication.ui.playlist.PlaylistsViewModel
+import com.practicum.myapplication.ui.search.SearchScreen
 import com.practicum.myapplication.ui.search.SearchViewModel
-import com.practicum.myapplication.ui.settings.FavoritesScreen
+import com.practicum.myapplication.ui.settings.SettingsScreen
 import com.practicum.myapplication.ui.track.TrackDetails
 
 @Composable
@@ -22,6 +23,7 @@ fun PlaylistHost(navController: NavHostController) {
 
     val searchViewModel: SearchViewModel = viewModel(factory = SearchViewModel.getViewModelFactory())
     val playlistsViewModel: PlaylistsViewModel = viewModel(factory = PlaylistsViewModel.getViewModelFactory())
+    val favoritesViewModel: FavoritesViewModel = viewModel(factory = FavoritesViewModel.getViewModelFactory())
 
     NavHost(
         navController = navController,
@@ -67,7 +69,12 @@ fun PlaylistHost(navController: NavHostController) {
 
         // 5. Экран Избранного
         composable(Screen.Favorites.name) {
-            FavoritesScreen()
+            FavoritesScreen(
+                viewModel = favoritesViewModel,
+                searchViewModel = searchViewModel,
+                onBack = { navController.popBackStack() },
+                onTrackClick = { navController.navigate(Screen.TrackDetails.name) }
+            )
         }
 
         // 6. Экран Детали Трека
@@ -75,6 +82,7 @@ fun PlaylistHost(navController: NavHostController) {
             TrackDetails(
                 playlistsViewModel = playlistsViewModel,
                 searchViewModel = searchViewModel,
+                favoritesViewModel = favoritesViewModel,
                 onBack = { navController.popBackStack() }
             )
         }

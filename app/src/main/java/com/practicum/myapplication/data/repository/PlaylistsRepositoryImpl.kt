@@ -1,6 +1,7 @@
 package com.practicum.myapplication.data.repository
 
 import com.practicum.myapplication.data.db.AppDatabase
+import com.practicum.myapplication.data.entity.FavoriteTrackEntity
 import com.practicum.myapplication.data.entity.PlaylistEntity
 import com.practicum.myapplication.data.entity.PlaylistTrackEntity
 import com.practicum.myapplication.data.entity.toDomain
@@ -17,6 +18,7 @@ class PlaylistsRepositoryImpl(
     private val _playlistDAO = appDatabase.getPlaylistDAO()
     private val _trackDAO = appDatabase.getTrackDAO()
     private val _playlistTrackDAO = appDatabase.getPlaylistTrackDAO()
+    private val _favoriteTrackDAO = appDatabase.getFavoriteTrackDAO()
 
     override suspend fun createPlaylist(title: String, description: String) {
         val newPlaylist = PlaylistEntity(
@@ -67,5 +69,23 @@ class PlaylistsRepositoryImpl(
         )
 
         _playlistDAO.updatePlaylist(newPlaylist)
+    }
+
+    override suspend fun addToFavorites(track: Track) {
+        _trackDAO.insertTrack(track.toEntity())
+        _favoriteTrackDAO.addToFavorites(FavoriteTrackEntity(track.id))
+    }
+
+    override suspend fun removeFromFavorites(trackId: Long) {
+        _favoriteTrackDAO.removeFromFavorites(trackId)
+    }
+
+    override suspend fun getFavoriteTracks(): List<Track> {
+        val ids = _favoriteTrackDAO.getFavoriteTrackIds()
+        return _trackDAO.getTracksByIds(ids).map { it.toDomain() }
+    }
+
+    override suspend fun isFavorite(trackId: Long): Boolean {
+        return _favoriteTrackDAO.isFavorite(trackId)
     }
 }

@@ -10,9 +10,12 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.outlined.Add
+import androidx.compose.material.icons.outlined.FavoriteBorder
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -20,6 +23,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
@@ -27,6 +31,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.practicum.myapplication.domain.model.Track
+import com.practicum.myapplication.ui.favorites.FavoritesViewModel
 import com.practicum.myapplication.ui.playlist.PlaylistsViewModel
 import com.practicum.myapplication.ui.search.SearchViewModel
 
@@ -35,9 +40,16 @@ import com.practicum.myapplication.ui.search.SearchViewModel
 fun TrackDetails(
     onBack: () -> Unit,
     searchViewModel: SearchViewModel,
-    playlistsViewModel: PlaylistsViewModel
+    playlistsViewModel: PlaylistsViewModel,
+    favoritesViewModel: FavoritesViewModel
 ) {
     val track: Track = searchViewModel.selectedTrack ?: throw NullPointerException()
+
+    val isFav by favoritesViewModel.isFavorite.collectAsState()
+
+    LaunchedEffect(track.id) {
+        favoritesViewModel.checkFavoriteStatus(track.id)
+    }
 
     // Цвета для светлой темы
     val backgroundColor = colorResource(R.color.white)
@@ -126,15 +138,17 @@ fun TrackDetails(
 
             // Кнопка "Лайк/Избранное"
             IconButton(
-                onClick = { /* TODO: Добавить в избранное */ },
+                onClick = {
+                    favoritesViewModel.toggleFavorite(track, isFav)
+                },
                 modifier = Modifier
                     .size(56.dp)
                     .background(color = buttonBackgroundColor, shape = CircleShape)
             ) {
                 Icon(
-                    imageVector = Icons.Default.Favorite,
+                    imageVector = if (isFav) Icons.Default.Favorite else Icons.Outlined.FavoriteBorder,
                     contentDescription = "Нравится",
-                    tint = iconColor
+                    tint = if (isFav) Color.Red else iconColor
                 )
             }
         }

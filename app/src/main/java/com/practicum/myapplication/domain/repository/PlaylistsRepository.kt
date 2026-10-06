@@ -10,4 +10,8 @@ interface PlaylistsRepository {
     suspend fun addTrackToPlaylist(track: Track, playlist: Playlist)
     suspend fun getTracksByPlaylistId(id: Long): List<Track>
     suspend fun updatePlaylistSumTrackTimeMillisById(id: Long)
+    suspend fun addToFavorites(track: Track)
+    suspend fun removeFromFavorites(trackId: Long)
+    suspend fun getFavoriteTracks(): List<Track>
+    suspend fun isFavorite(trackId: Long): Boolean
 }
