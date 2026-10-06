@@ -1,5 +1,6 @@
 package com.practicum.myapplication.domain.repository
 
+import com.practicum.myapplication.data.entity.PlaylistEntity
 import com.practicum.myapplication.domain.model.Playlist
 import com.practicum.myapplication.domain.model.Track
 
@@ -8,4 +9,5 @@ interface PlaylistsRepository {
     suspend fun getPlaylists(): List<Playlist>
     suspend fun addTrackToPlaylist(track: Track, playlist: Playlist)
     suspend fun getTracksByPlaylistId(id: Long): List<Track>
+    suspend fun updatePlaylistSumTrackTimeMillisById(id: Long)
 }

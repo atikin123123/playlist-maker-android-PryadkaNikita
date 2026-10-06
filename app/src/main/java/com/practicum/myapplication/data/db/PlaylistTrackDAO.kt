@@ -5,8 +5,8 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Transaction
-import com.practicum.myapplication.data.dto.PlaylistTrackEntity
-import com.practicum.myapplication.data.dto.TrackEntity
+import com.practicum.myapplication.data.entity.PlaylistTrackEntity
+import com.practicum.myapplication.data.entity.TrackEntity
 
 @Dao
 interface PlaylistTrackDAO {
@@ -27,5 +27,5 @@ interface PlaylistTrackDAO {
     }
 
     @Query("select trackId from playlist_track where playlistId = :playlistId")
-    suspend fun getTrackIdsByPlaylistId(playlistId: Long) : List<Int>
+    suspend fun getTrackIdsByPlaylistId(playlistId: Long) : List<Long>
 }

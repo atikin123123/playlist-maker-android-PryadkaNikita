@@ -1,4 +1,4 @@
-package com.practicum.myapplication.data.dto
+package com.practicum.myapplication.data.entity
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey

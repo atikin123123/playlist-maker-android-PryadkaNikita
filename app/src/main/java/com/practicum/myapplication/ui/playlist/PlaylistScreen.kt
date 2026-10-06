@@ -63,6 +63,8 @@ fun PlaylistScreen(
 ) {
     val playlist: Playlist = playlistsViewModel.selectedPlaylist ?: throw NullPointerException()
 
+
+
     Surface(modifier = Modifier.fillMaxSize(), color = Color.White) {
         LazyColumn(modifier = Modifier.fillMaxSize()) {
             item {
@@ -217,16 +219,16 @@ private val previewTracks = listOf(
     Track(4, "Let It Be", "The Beatles", "3:11"),
 )
 
-private val previewPlaylist = Playlist(
-    id = 101,
-    title = "Best songs 2021",
-    year = "2022",
-    trackCount = "98 треков",
-    sumTrackDuration = "300 минут",
-    coverUrl = null,
-    tracks = previewTracks,
-    hasImage = true
-)
+//private val previewPlaylist = Playlist(
+//    id = 101,
+//    title = "Best songs 2021",
+//    year = "2022",
+//    trackCount = "98 треков",
+//    sumTrackDuration = "300 минут",
+//    coverUrl = null,
+//    tracks = previewTracks,
+//    hasImage = true
+//)
 
 //@Preview(showBackground = true, heightDp = 800)
 //@Composable

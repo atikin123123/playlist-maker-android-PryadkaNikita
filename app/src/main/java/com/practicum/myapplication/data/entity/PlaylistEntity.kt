@@ -1,4 +1,4 @@
-package com.practicum.myapplication.data.dto
+package com.practicum.myapplication.data.entity
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
@@ -10,20 +10,19 @@ data class PlaylistEntity(
     val id: Long = 0,
     val title: String,
     val year: String,
-//    val coverUrl: String?,
-//    val trackEntities: MutableList<TrackEntity>,
     val sumDurationMillis: Int,
     val hasImage: Boolean
 )
 
-fun PlaylistEntity.toDomain(trackCount: Int): Playlist {
-//    val tracks = trackEntities.map { it.toDomain() }
+fun PlaylistEntity.toDomain(tracks: List<TrackEntity>): Playlist {
+    val tracks = tracks.map { it.toDomain() }
     return Playlist(
         id = id,
         title = title,
         year = year,
         coverUrl = null,
-        trackCount = trackCount.toString(),
+        tracks = tracks,
+        trackCount = tracks.size.toTrackCountString(),
         sumTrackDuration = sumDurationMillis.toDurationString(),
         hasImage = hasImage
     )

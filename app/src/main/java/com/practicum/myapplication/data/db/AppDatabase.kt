@@ -2,9 +2,9 @@ package com.practicum.myapplication.data.db
 
 import androidx.room.Database
 import androidx.room.RoomDatabase
-import com.practicum.myapplication.data.dto.PlaylistEntity
-import com.practicum.myapplication.data.dto.PlaylistTrackEntity
-import com.practicum.myapplication.data.dto.TrackEntity
+import com.practicum.myapplication.data.entity.PlaylistEntity
+import com.practicum.myapplication.data.entity.PlaylistTrackEntity
+import com.practicum.myapplication.data.entity.TrackEntity
 
 @Database(
     version = 1,

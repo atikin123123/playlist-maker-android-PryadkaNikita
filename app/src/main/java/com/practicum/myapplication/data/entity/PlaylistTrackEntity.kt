@@ -1,4 +1,4 @@
-package com.practicum.myapplication.data.dto
+package com.practicum.myapplication.data.entity
 
 import androidx.room.Entity
 import androidx.room.ForeignKey
@@ -14,7 +14,7 @@ import androidx.room.ForeignKey
             onDelete = ForeignKey.CASCADE
         ),
         ForeignKey(
-            entity = PlaylistEntity::class,
+            entity = TrackEntity::class,
             parentColumns = ["id"],
             childColumns = ["trackId"],
             onDelete = ForeignKey.CASCADE

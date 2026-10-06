@@ -7,7 +7,7 @@ data class Playlist(
     val title: String,
     val year: String,
     val coverUrl: String?,
-//    val tracks: List<Track>,
+    val tracks: List<Track>,
     val trackCount: String,
     val sumTrackDuration: String,
     val hasImage: Boolean

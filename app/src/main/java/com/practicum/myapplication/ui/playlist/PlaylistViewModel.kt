@@ -26,7 +26,6 @@ class PlaylistsViewModel(
         selectedPlaylist = playlist
     }
 
-    // Эта функция вызовется, когда пользователь откроет вкладку "Медиатека"
     fun loadPlaylists() {
         viewModelScope.launch(Dispatchers.IO) {
             try {
@@ -54,6 +53,7 @@ class PlaylistsViewModel(
         viewModelScope.launch(Dispatchers.IO) {
             try {
                 playlistsRepository.addTrackToPlaylist(track, playlist)
+                playlistsRepository.updatePlaylistSumTrackTimeMillisById(playlist.id)
             } catch (e: Exception) {
                 _playlistsState.update { PlaylistsLoadState.Fail(error = e.message.toString()) }
             }

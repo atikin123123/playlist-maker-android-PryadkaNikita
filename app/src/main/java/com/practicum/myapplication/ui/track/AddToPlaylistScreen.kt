@@ -9,6 +9,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -22,7 +23,6 @@ import com.practicum.myapplication.ui.playlist.PlaylistsViewModel
 
 @Composable
 fun AddToPlaylistScreen(
-//    playlists: List<Playlist>,
     onPlaylistSelected: () -> Unit,
     modifier: Modifier = Modifier,
     playlistsViewModel: PlaylistsViewModel
@@ -30,11 +30,14 @@ fun AddToPlaylistScreen(
 
     val screenState by playlistsViewModel.playlistsState.collectAsState()
 
+    LaunchedEffect(Unit) {
+        playlistsViewModel.loadPlaylists()
+    }
+
     Column(
         modifier = modifier
             .fillMaxWidth()
             .background(Color.White)
-//            .padding(top = 16.dp)
     ) {
         Text(
             text = "Добавить в плейлист",

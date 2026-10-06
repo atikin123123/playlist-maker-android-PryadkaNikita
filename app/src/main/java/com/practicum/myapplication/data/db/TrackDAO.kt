@@ -4,14 +4,14 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import com.practicum.myapplication.data.dto.TrackEntity
+import com.practicum.myapplication.data.entity.TrackEntity
 
 @Dao
 interface TrackDAO {
 
     @Insert(entity = TrackEntity::class, onConflict = OnConflictStrategy.IGNORE)
-    fun insertTrack(trackEntity: TrackEntity)
+    suspend fun insertTrack(trackEntity: TrackEntity)
 
-    @Query("select * from track where id between :from and :to")
-    fun getTracksBetween(from: Int, to: Int): List<TrackEntity>
+    @Query("select * from track where id in (:ids)")
+    suspend fun getTracksByIds(ids: List<Long>): List<TrackEntity>
 }
