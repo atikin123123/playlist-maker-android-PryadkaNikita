@@ -33,10 +33,13 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.practicum.myapplication.R
 import androidx.lifecycle.viewmodel.compose.viewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -45,23 +48,20 @@ fun CreatePlaylistScreen(
     onBackClick: () -> Unit,
     playlistViewModel: PlaylistsViewModel = viewModel(factory = PlaylistsViewModel.getViewModelFactory())
 ) {
-    // Состояния для текстовых полей
     var title by remember { mutableStateOf("") }
     var description by remember { mutableStateOf("") }
 
-    // Кнопка активна только если введено название
     val isButtonEnabled = title.isNotBlank()
 
-    // Кастомные цвета из макета
-    val primaryBlue = Color(0xFF3872F4) // Синий цвет активной кнопки и фокуса
-    val disabledGray = Color(0xFFAFAFAF) // Серый цвет неактивной кнопки
+    val primaryBlue = colorResource(R.color.yp_primary_blue)
+    val disabledGray = colorResource(R.color.yp_disabled_gray)
 
     Scaffold(
         topBar = {
             TopAppBar(
                 title = {
                     Text(
-                        text = "Новый плейлист",
+                        text = stringResource(R.string.new_playlist_title),
                         fontSize = 20.sp,
                         fontWeight = FontWeight.Medium
                     )
@@ -70,16 +70,16 @@ fun CreatePlaylistScreen(
                     IconButton(onClick = onBackClick) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = "Назад"
+                            contentDescription = stringResource(R.string.description_back)
                         )
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = Color.White
+                    containerColor = colorResource(R.color.white)
                 )
             )
         },
-        containerColor = Color.White
+        containerColor = colorResource(R.color.white)
     ) { paddingValues ->
         Column(
             modifier = Modifier
@@ -89,60 +89,54 @@ fun CreatePlaylistScreen(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
 
-            // Иконка добавления обложки
             Box(
                 modifier = Modifier
                     .size(120.dp)
                     .clickable { /* TODO: Логика выбора картинки */ },
                 contentAlignment = Alignment.Center
             ) {
-                // В реальном проекте сюда лучше вставить экспортированную SVG иконку
                 Icon(
                     imageVector = Icons.Outlined.AddPhotoAlternate,
-                    contentDescription = "Добавить обложку",
+                    contentDescription = stringResource(R.string.add_cover_content_description),
                     modifier = Modifier.size(100.dp),
-                    tint = Color.LightGray
+                    tint = colorResource(R.color.yp_light_gray_icon)
                 )
             }
 
             Spacer(modifier = Modifier.height(48.dp))
 
-            // Поле "Название"
             OutlinedTextField(
                 value = title,
                 onValueChange = { title = it },
-                label = { Text("Название*") },
+                label = { Text(stringResource(R.string.playlist_title_hint)) },
                 modifier = Modifier.fillMaxWidth(),
                 singleLine = true,
                 colors = OutlinedTextFieldDefaults.colors(
                     focusedBorderColor = primaryBlue,
                     focusedLabelColor = primaryBlue,
-                    unfocusedBorderColor = Color.LightGray
+                    unfocusedBorderColor = colorResource(R.color.yp_light_gray_icon)
                 ),
                 shape = RoundedCornerShape(8.dp)
             )
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            // Поле "Описание"
             OutlinedTextField(
                 value = description,
                 onValueChange = { description = it },
-                label = { Text("Описание") },
+                label = { Text(stringResource(R.string.playlist_description_hint)) },
                 modifier = Modifier.fillMaxWidth(),
                 singleLine = true,
                 colors = OutlinedTextFieldDefaults.colors(
                     focusedBorderColor = primaryBlue,
                     focusedLabelColor = primaryBlue,
-                    unfocusedBorderColor = Color.LightGray
+                    unfocusedBorderColor = colorResource(R.color.yp_light_gray_icon)
                 ),
                 shape = RoundedCornerShape(8.dp)
             )
 
-            // Выталкиваем кнопку в самый низ экрана
             Spacer(modifier = Modifier.weight(1f))
 
-            // Кнопка "Создать"
             Button(
                 onClick = {
                     playlistViewModel.createNewPlaylist(title, description)
@@ -155,13 +149,13 @@ fun CreatePlaylistScreen(
                 shape = RoundedCornerShape(8.dp),
                 colors = ButtonDefaults.buttonColors(
                     containerColor = primaryBlue,
-                    contentColor = Color.White,
+                    contentColor = colorResource(R.color.white),
                     disabledContainerColor = disabledGray,
-                    disabledContentColor = Color.White
+                    disabledContentColor = colorResource(R.color.white)
                 )
             ) {
                 Text(
-                    text = "Создать",
+                    text = stringResource(R.string.create_playlist_button),
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Medium
                 )

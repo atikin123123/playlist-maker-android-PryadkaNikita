@@ -28,7 +28,6 @@ fun SettingsScreen(onBack: () -> Unit) {
     val context = LocalContext.current
     var isDarkTheme by remember { mutableStateOf(false) }
 
-    // Строки
     val shareText = stringResource(R.string.share_link)
     val supportEmail = stringResource(R.string.support_email)
     val supportSubject = stringResource(R.string.support_subject)
@@ -38,7 +37,7 @@ fun SettingsScreen(onBack: () -> Unit) {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(colorResource(R.color.white)) // Ресурс
+            .background(colorResource(R.color.white))
     ) {
         Row(
             modifier = Modifier.fillMaxWidth().padding(horizontal = 4.dp, vertical = 12.dp),
@@ -48,19 +47,18 @@ fun SettingsScreen(onBack: () -> Unit) {
                 Icon(
                     imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                     contentDescription = null,
-                    tint = colorResource(R.color.black) // Ресурс
+                    tint = colorResource(R.color.black)
                 )
             }
             Text(
                 text = stringResource(R.string.settings_title),
                 fontSize = 22.sp,
                 fontWeight = FontWeight.Medium,
-                color = colorResource(R.color.black), // Ресурс
+                color = colorResource(R.color.black),
                 modifier = Modifier.padding(start = 8.dp)
             )
         }
 
-        // Переключатель
         Row(
             modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 16.dp),
             verticalAlignment = Alignment.CenterVertically
@@ -68,20 +66,19 @@ fun SettingsScreen(onBack: () -> Unit) {
             Text(
                 text = stringResource(R.string.settings_theme),
                 fontSize = 16.sp,
-                color = colorResource(R.color.black), // Ресурс
+                color = colorResource(R.color.black),
                 modifier = Modifier.weight(1f)
             )
             Switch(
                 checked = isDarkTheme,
                 onCheckedChange = { isDarkTheme = it },
                 colors = SwitchDefaults.colors(
-                    checkedThumbColor = colorResource(R.color.yp_blue), // Ресурс
+                    checkedThumbColor = colorResource(R.color.yp_blue),
                     checkedTrackColor = colorResource(R.color.yp_blue).copy(alpha = 0.5f)
                 )
             )
         }
 
-        // Кнопки действий
         SettingsItem(stringResource(R.string.settings_share), Icons.Default.Share) {
             val shareIntent = Intent(Intent.ACTION_SEND).apply {
                 type = "text/plain"
@@ -122,13 +119,13 @@ fun SettingsItem(
         Text(
             text = text,
             fontSize = 16.sp,
-            color = colorResource(R.color.black), // Ресурс
+            color = colorResource(R.color.black),
             modifier = Modifier.weight(1f)
         )
         Icon(
             imageVector = icon,
             contentDescription = null,
-            tint = colorResource(R.color.yp_gray) // Ресурс
+            tint = colorResource(R.color.yp_gray)
         )
     }
 }

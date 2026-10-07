@@ -24,11 +24,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.practicum.myapplication.R
 import com.practicum.myapplication.domain.model.Playlist
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -53,23 +56,23 @@ fun PlaylistsScreen(
             TopAppBar(
                 title = {
                     Text(
-                        text = "Плейлисты",
+                        text = stringResource(R.string.playlists_screen_title),
                         fontSize = 24.sp,
                         fontWeight = FontWeight.Bold,
-                        color = Color.Black
+                        color = colorResource(R.color.yp_text_primary)
                     )
                 },
                 navigationIcon = {
                     IconButton(onClick = { onBack() }) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = "Назад",
-                            tint = Color.Black
+                            contentDescription = stringResource(R.string.description_back),
+                            tint = colorResource(R.color.yp_text_primary)
                         )
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = Color.White
+                    containerColor = colorResource(R.color.white)
                 )
             )
         },
@@ -77,24 +80,24 @@ fun PlaylistsScreen(
             FloatingActionButton(
                 onClick = { onCreatePlaylistClick() },
                 shape = CircleShape,
-                containerColor = Color(0xFFC4C4C4), // Светло-серый цвет кнопки из макета
-                contentColor = Color.White
+                containerColor = colorResource(R.color.yp_gray_placeholder),
+                contentColor = colorResource(R.color.white)
             ) {
                 Icon(
                     imageVector = Icons.Default.Add,
-                    contentDescription = "Добавить плейлист",
-                    modifier = Modifier.size(32.dp) // Увеличенный размер плюсика
+                    contentDescription = stringResource(R.string.add_playlist_content_description),
+                    modifier = Modifier.size(32.dp)
                 )
             }
         },
-        floatingActionButtonPosition = FabPosition.End, // Кнопка справа внизу
-        containerColor = Color.White
+        floatingActionButtonPosition = FabPosition.End,
+        containerColor = colorResource(R.color.white)
     ) { paddingValues ->
 
         when (screenState) {
             PlaylistsLoadState.Initial, PlaylistsLoadState.Loading ->
                 Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                    CircularProgressIndicator(color = Color(0xFF9D9D9D))
+                     CircularProgressIndicator(color = colorResource(R.color.yp_gray_loader))
                 }
 
             is PlaylistsLoadState.Success -> {
@@ -127,7 +130,7 @@ fun PlaylistsScreen(
                 Modifier.fillMaxSize(),
                 contentAlignment = Alignment.Center
             ) {
-                Text("Не удалось загрузить плейлисты", color = Color.Red)
+                Text(stringResource(R.string.error_loading_playlists), color = colorResource(R.color.yp_red))
             }
 
         }
@@ -137,8 +140,8 @@ fun PlaylistsScreen(
     if (showDeleteConfirmDialog && playlistToDelete != null) {
         AlertDialog(
             onDismissRequest = { showDeleteConfirmDialog = false },
-            title = { Text("Удалить плейлист?") },
-            text = { Text("Плейлист \"${playlistToDelete?.title}\" будет удалён безвозвратно.") },
+            title = { Text(stringResource(R.string.delete_playlist_title)) },
+            text = { Text(stringResource(R.string.delete_playlist_message, playlistToDelete?.title ?: "")) },
             confirmButton = {
                 TextButton(
                     onClick = {
@@ -149,12 +152,12 @@ fun PlaylistsScreen(
                         playlistToDelete = null
                     }
                 ) {
-                    Text("Удалить", color = Color.Red)
+                    Text(stringResource(R.string.delete), color = colorResource(R.color.yp_red))
                 }
             },
             dismissButton = {
                 TextButton(onClick = { showDeleteConfirmDialog = false }) {
-                    Text("Отмена")
+                    Text(stringResource(R.string.cancel))
                 }
             }
         )
@@ -179,44 +182,39 @@ fun PlaylistItem(
             ),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        // Обложка плейлиста
         if (playlist.hasImage) {
             Image(
-                // ЗАМЕНИТЕ НА ВАШУ КАРТИНКУ ИЗ РЕСУРСОВ
                 painter = painterResource(id = android.R.drawable.ic_menu_gallery),
-                contentDescription = "Обложка плейлиста",
+                contentDescription = stringResource(R.string.playlist_cover_content_description),
                 contentScale = ContentScale.Crop,
                 modifier = Modifier
                     .size(64.dp)
                     .clip(RoundedCornerShape(8.dp))
             )
         } else {
-            // Плейсхолдер, если обложки нет (как у плейлиста "Morning")
             Box(
                 modifier = Modifier
                     .size(64.dp)
                     .clip(RoundedCornerShape(8.dp))
-                    .background(Color(0xFFE0E0E0)),
+                    .background(colorResource(R.color.yp_gray_placeholder)),
                 contentAlignment = Alignment.Center
             ) {
-                // Если есть своя иконка заглушки (например, R.drawable.ic_placeholder) - используйте Image
                 Icon(
-                    imageVector = Icons.Default.Add, // Временно используем плюс
-                    contentDescription = "Нет обложки",
-                    tint = Color.Gray
+                    imageVector = Icons.Default.Add,
+                    contentDescription = stringResource(R.string.no_playlist_cover_content_description),
+                    tint = colorResource(R.color.yp_gray_placeholder)
                 )
             }
         }
 
         Spacer(modifier = Modifier.width(16.dp))
 
-        // Текст (Название и количество треков)
         Column {
             Text(
                 text = playlist.title,
                 fontSize = 18.sp,
                 fontWeight = FontWeight.Medium,
-                color = Color.Black,
+                color = colorResource(R.color.yp_text_primary),
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis
             )
@@ -224,7 +222,7 @@ fun PlaylistItem(
             Text(
                 text = playlist.trackCount,
                 fontSize = 14.sp,
-                color = Color(0xFFAAAAAA) // Серый цвет текста
+                color = colorResource(R.color.yp_gray_text_secondary)
             )
         }
     }

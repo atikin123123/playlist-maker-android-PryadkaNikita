@@ -25,6 +25,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -55,32 +56,32 @@ fun FavoritesScreen(
                     text = stringResource(R.string.favorites),
                     fontSize = 24.sp,
                     fontWeight = FontWeight.Bold,
-                    color = Color.Black
+                    color = colorResource(R.color.yp_text_primary)
                 )
             },
             navigationIcon = {
                 IconButton(onClick = { onBack() }) {
                     Icon(
                         imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                        contentDescription = "Назад",
-                        tint = Color.Black
+                        contentDescription = stringResource(R.string.description_back),
+                        tint = colorResource(R.color.yp_text_primary)
                     )
                 }
             },
-            colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.White)
+            colors = TopAppBarDefaults.topAppBarColors(containerColor = colorResource(R.color.white))
         )
 
         when (screenState) {
             FavoritesLoadState.Initial, FavoritesLoadState.Loading -> {
                 Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                    CircularProgressIndicator(color = Color(0xFF9D9D9D))
+                     CircularProgressIndicator(color = colorResource(R.color.yp_gray_loader))
                 }
             }
 
             is FavoritesLoadState.Error -> {
                 Text(
                     text = (screenState as FavoritesLoadState.Error).message,
-                    color = Color.Red,
+                    color = colorResource(R.color.yp_red),
                     modifier = Modifier.padding(16.dp)
                 )
             }
@@ -92,7 +93,7 @@ fun FavoritesScreen(
                         Text(
                             text = stringResource(R.string.screen_favorites_content),
                             modifier = Modifier.padding(16.dp),
-                            color = Color.Gray
+                            color = colorResource(R.color.yp_gray_text_secondary)
                         )
                     }
                 } else {

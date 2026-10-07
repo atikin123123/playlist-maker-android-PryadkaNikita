@@ -49,7 +49,6 @@ fun SearchScreen(
 
     val focusManager = LocalFocusManager.current
 
-    // запрос передаём параметром, т.к. при клике по истории text обновится только в следующей композиции
     fun runSearch(query: String) {
         if (query.isNotBlank()) {
             text = query
@@ -59,17 +58,14 @@ fun SearchScreen(
         }
     }
 
-    // первое нажатие «Назад» закрывает список, второе уходит с экрана
     BackHandler(enabled = isFocused) { focusManager.clearFocus() }
 
-    // подсказки: вся история при пустом поле, иначе фильтр по тексту
     val suggestions = searchHistory.filter { it.contains(text, ignoreCase = true) }
 
     Column(
         modifier = Modifier
             .fillMaxSize()
             .background(colorResource(R.color.white))
-            // тап по пустому месту снимает фокус и скрывает список
             .pointerInput(Unit) { detectTapGestures { focusManager.clearFocus() } }
     ) {
         Row(
@@ -94,7 +90,6 @@ fun SearchScreen(
 
         Box(modifier = Modifier.fillMaxSize()) {
 
-            // Результаты поиска (под полем: 52dp поле + 2*8dp отступы = 68dp)
             Column(modifier = Modifier.fillMaxSize().padding(top = 68.dp)) {
                 when (screenState) {
                     is SearchState.Initial -> {
@@ -141,7 +136,6 @@ fun SearchScreen(
                 }
             }
 
-            // Карточка: поле ввода + выпадающая история (поверх результатов)
             Surface(
                 modifier = Modifier
                     .zIndex(1f)

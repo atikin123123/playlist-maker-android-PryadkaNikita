@@ -27,6 +27,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -76,7 +77,7 @@ fun TrackDetails(
         ) {
             Icon(
                 imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                contentDescription = "Назад",
+                contentDescription = stringResource(R.string.description_back),
                 tint = textColor
             )
         }
@@ -87,7 +88,7 @@ fun TrackDetails(
         Image(
             // ЗАМЕНИТЕ R.drawable.beatles_cover НА ВАШУ КАРТИНКУ
             painter = painterResource(id = R.drawable.ic_music),
-            contentDescription = "Обложка альбома",
+            contentDescription = stringResource(R.string.album_cover_content_description),
             modifier = Modifier
                 .fillMaxWidth()
                 .aspectRatio(1f) // Делает картинку квадратной
@@ -107,7 +108,6 @@ fun TrackDetails(
 
         Spacer(modifier = Modifier.height(8.dp))
 
-        // Исполнитель
         Text(
             text = track.artistName,
             fontSize = 16.sp,
@@ -116,12 +116,10 @@ fun TrackDetails(
 
         Spacer(modifier = Modifier.height(32.dp))
 
-        // Блок с круглыми кнопками (Добавить и Лайк)
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            // Кнопка "Добавить в плейлист"
             IconButton(
                 onClick = { showBottomSheet = true },
                 modifier = Modifier
@@ -129,15 +127,12 @@ fun TrackDetails(
                     .background(color = buttonBackgroundColor, shape = CircleShape)
             ) {
                 Icon(
-                    // Использована стандартная иконка плюса.
-                    // Замените на painterResource(id = R.drawable.your_custom_icon), если есть своя
                     imageVector = Icons.Outlined.Add,
-                    contentDescription = "Добавить в плейлист",
+                    contentDescription = stringResource(R.string.add_to_playlist_button_description),
                     tint = iconColor
                 )
             }
 
-            // Кнопка "Лайк/Избранное"
             IconButton(
                 onClick = {
                     favoritesViewModel.toggleFavorite(track, isFav)
@@ -148,8 +143,8 @@ fun TrackDetails(
             ) {
                 Icon(
                     imageVector = if (isFav) Icons.Default.Favorite else Icons.Outlined.FavoriteBorder,
-                    contentDescription = "Нравится",
-                    tint = if (isFav) Color.Red else iconColor
+                    contentDescription = stringResource(R.string.favorite_button_description),
+                    tint = if (isFav) colorResource(R.color.yp_red) else iconColor
                 )
             }
         }
@@ -173,14 +168,13 @@ fun TrackDetails(
 
         Spacer(modifier = Modifier.height(32.dp))
 
-        // Блок "Длительность"
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
-                text = "Длительность",
+                text = stringResource(R.string.duration_label),
                 fontSize = 14.sp,
                 color = secondaryTextColor
             )

@@ -38,18 +38,17 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
+import com.practicum.myapplication.R
 import com.practicum.myapplication.domain.model.Playlist
 import com.practicum.myapplication.domain.model.Track
 import com.practicum.myapplication.ui.search.SearchViewModel
 import com.practicum.myapplication.ui.track.TrackListItem
-
-
-private val TextPrimary = Color(0xFF1A1A1A)
-private val IconGray = Color(0xFFA9A9AE)
 
 
 @Composable
@@ -66,7 +65,7 @@ fun PlaylistScreen(
     var showDeleteTrackDialog by remember { mutableStateOf(false) }
     var trackToDelete by remember { mutableStateOf<Track?>(null) }
 
-    Surface(modifier = Modifier.fillMaxSize(), color = Color.White) {
+    Surface(modifier = Modifier.fillMaxSize(), color = colorResource(R.color.white)) {
         LazyColumn(modifier = Modifier.fillMaxSize()) {
             item {
                 IconButton(
@@ -75,8 +74,8 @@ fun PlaylistScreen(
                 ) {
                     Icon(
                         imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                        contentDescription = "Назад",
-                        tint = TextPrimary,
+                        contentDescription = stringResource(R.string.description_back),
+                         tint = colorResource(R.color.yp_text_primary),
                     )
                 }
             }
@@ -107,8 +106,8 @@ fun PlaylistScreen(
     if (showDeleteTrackDialog && trackToDelete != null) {
         AlertDialog(
             onDismissRequest = { showDeleteTrackDialog = false },
-            title = { Text("Удалить трек?") },
-            text = { Text("Трек \"${trackToDelete?.trackName}\" будет удалён из плейлиста.") },
+            title = { Text(stringResource(R.string.delete_track_title)) },
+            text = { Text(stringResource(R.string.delete_track_message, trackToDelete?.trackName ?: "")) },
             confirmButton = {
                 TextButton(
                     onClick = {
@@ -119,12 +118,12 @@ fun PlaylistScreen(
                         trackToDelete = null
                     }
                 ) {
-                    Text("Удалить", color = Color.Red)
+                    Text(stringResource(R.string.delete), color = colorResource(R.color.yp_red))
                 }
             },
             dismissButton = {
                 TextButton(onClick = { showDeleteTrackDialog = false }) {
-                    Text("Отмена")
+                    Text(stringResource(R.string.cancel))
                 }
             }
         )
@@ -147,15 +146,15 @@ private fun PlaylistCover(
         if (url != null) {
             AsyncImage(
                 model = url,
-                contentDescription = "Обложка плейлиста",
+                contentDescription = stringResource(R.string.playlist_cover_content_description),
                 contentScale = ContentScale.Crop,
                 modifier = Modifier.fillMaxSize(),
             )
         } else {
             Icon(
                 imageVector = Icons.Filled.AddPhotoAlternate,
-                contentDescription = "Добавить обложку",
-                tint = IconGray,
+                contentDescription = stringResource(R.string.add_cover_content_description),
+                tint = colorResource(R.color.yp_icon_gray),
                 modifier = Modifier.size(88.dp),
             )
         }
@@ -173,15 +172,15 @@ private fun PlaylistInfo(
             text = playlist.title,
             fontSize = 28.sp,
             fontWeight = FontWeight.Bold,
-            color = TextPrimary,
+            color = colorResource(R.color.yp_text_primary),
         )
         Spacer(Modifier.height(10.dp))
-        Text(text = playlist.year, fontSize = 20.sp, color = TextPrimary)
+        Text(text = playlist.year, fontSize = 20.sp, color = colorResource(R.color.yp_text_primary))
         Spacer(Modifier.height(10.dp))
         Text(
             text = "${playlist.sumTrackDuration} : ${playlist.trackCount}",
             fontSize = 20.sp,
-            color = TextPrimary
+            color = colorResource(R.color.yp_text_primary)
         )
         IconButton(
             onClick = onMenuClick,
@@ -191,15 +190,14 @@ private fun PlaylistInfo(
         ) {
             Icon(
                 imageVector = Icons.Filled.MoreVert,
-                contentDescription = "Меню",
-                tint = TextPrimary,
+                contentDescription = stringResource(R.string.playlist_menu_content_description),
+                tint = colorResource(R.color.yp_text_primary),
             )
         }
         Spacer(Modifier.height(4.dp))
     }
 }
 
-// небольшой сдвиг, чтобы иконка «⋮» визуально выровнялась по левому краю текста
 private fun Modifier.offsetStart(): Modifier = this.then(Modifier.padding(start = 0.dp))
 
 @Composable
@@ -224,13 +222,13 @@ private fun TrackCover(track: Track) {
             Box(
                 modifier = Modifier
                     .size(28.dp)
-                    .border(BorderStroke(2.dp, Color(0xFF555555)), RoundedCornerShape(3.dp)),
+                    .border(BorderStroke(2.dp, colorResource(R.color.yp_gray_border)), RoundedCornerShape(3.dp)),
                 contentAlignment = Alignment.Center,
             ) {
                 Icon(
                     imageVector = Icons.Filled.MusicNote,
                     contentDescription = null,
-                    tint = Color(0xFF555555),
+                    tint = colorResource(R.color.yp_gray_border),
                     modifier = Modifier.size(18.dp),
                 )
             }
@@ -238,7 +236,6 @@ private fun TrackCover(track: Track) {
     }
 }
 
-// ---------- Preview ----------
 
 private val previewTracks = listOf(
     Track(1, "Yesterday (Remastered 2009)", "The Beatles", "2:55", null, Color.Red),

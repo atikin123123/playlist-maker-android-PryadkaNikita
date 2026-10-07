@@ -16,9 +16,12 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.practicum.myapplication.R
 import com.practicum.myapplication.ui.playlist.PlaylistsLoadState
 import com.practicum.myapplication.ui.playlist.PlaylistsViewModel
 
@@ -38,13 +41,13 @@ fun AddToPlaylistScreen(
     Column(
         modifier = modifier
             .fillMaxWidth()
-            .background(Color.White)
+            .background(colorResource(R.color.white))
     ) {
         Text(
-            text = "Добавить в плейлист",
+            text = stringResource(R.string.add_to_playlist_title),
             fontSize = 24.sp,
             fontWeight = FontWeight.Medium,
-            color = Color(0xFF191C1F), // Темно-серый/почти черный цвет как на макете
+            color = colorResource(R.color.yp_black),
             modifier = Modifier.align(Alignment.CenterHorizontally)
         )
 
@@ -54,7 +57,7 @@ fun AddToPlaylistScreen(
         when (screenState) {
             PlaylistsLoadState.Initial, PlaylistsLoadState.Loading ->
                 Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                    CircularProgressIndicator(color = Color(0xFF9D9D9D))
+                     CircularProgressIndicator(color = colorResource(R.color.yp_gray_loader))
                 }
 
             is PlaylistsLoadState.Success -> {
@@ -79,12 +82,10 @@ fun AddToPlaylistScreen(
             is PlaylistsLoadState.Fail -> Box(
                 Modifier.fillMaxSize(), contentAlignment = Alignment.Center
             ) {
-                Text("Не удалось загрузить плейлисты", color = Color.Red)
+                Text(stringResource(R.string.error_loading_playlists), color = colorResource(R.color.yp_red))
             }
 
         }
-        // Список плейлистов
-
     }
 }
 //
